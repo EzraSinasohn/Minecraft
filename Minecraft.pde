@@ -41,6 +41,7 @@ void setup() {
   rectMode(CORNERS);
   lights();
   noCursor();
+  clip(0, 0, width, height);
   try {
     robot = new Robot();
   } 
