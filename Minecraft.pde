@@ -9,8 +9,8 @@ float camX = 0, camY = 0, camZ = 100, camRX = 0, camRY = 0, camVY = 0, handAngle
 boolean punching = false;
 Player me = new Player(0, -25, 0, 6, 20, 6);
 void setup() {
-  fullScreen(P3D);
-  //size(800, 800, P3D);
+  //fullScreen(P3D);
+  size(1000, 800, P3D);
   //ground.add(new Ground(0, -75, 0, 25, 25, 25, false));
   ground.add(new Ground(0, 1, 0, 10, 10, 10, false, 100, 100, 100));
   ground.add(new Ground(0, 1, -1, 10, 10, 10, false, 100, 100, 100));
