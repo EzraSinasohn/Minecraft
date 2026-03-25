@@ -34,6 +34,26 @@ class Ground {
     }
   }
   
+  public boolean[] neighbors() {
+    boolean[] neighborCheck = {false, false, false, false, false, false};
+    for(int i = 0; i < nearbyGround.size(); i++) {
+      if(nearbyGround.get(i).xc == xc-1 && nearbyGround.get(i).yc == yc && nearbyGround.get(i).zc == zc) { //negX
+        neighborCheck[0] = true;
+      } if(nearbyGround.get(i).xc == xc+1 && nearbyGround.get(i).yc == yc && nearbyGround.get(i).zc == zc) { //posX
+        neighborCheck[1] = true;
+      } if(nearbyGround.get(i).xc == xc && nearbyGround.get(i).yc == yc-1 && nearbyGround.get(i).zc == zc) { //negY
+        neighborCheck[2] = true;
+      } if(nearbyGround.get(i).xc == xc && nearbyGround.get(i).yc == yc+1 && nearbyGround.get(i).zc == zc) { //posY
+        neighborCheck[3] = true;
+      } if(nearbyGround.get(i).xc == xc && nearbyGround.get(i).yc == yc && nearbyGround.get(i).zc == zc-1) { //negZ
+        neighborCheck[4] = true;
+      } if(nearbyGround.get(i).xc == xc && nearbyGround.get(i).yc == yc && nearbyGround.get(i).zc == zc+1) { //posZ
+        neighborCheck[5] = true;
+      }
+    }
+    return neighborCheck;
+  }
+  
   
   public float[] sides() {
     float[] dim = {y-h/2, y+h/2, x-l/2, x+l/2, z-w/2, z+w/2};
