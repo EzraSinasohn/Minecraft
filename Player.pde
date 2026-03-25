@@ -103,25 +103,25 @@ class Player {
       if(Math.abs(z-obj.z+obj.w/2) < w/2 && Math.abs(x-obj.x) < l/2+obj.l/2) {zNegSideCol = true;}
     } 
     if(((sides(obj)[0] < 0 && sides(obj)[1] < h) || (sides(obj)[0] < 0 && sides(obj)[1] < 0)) && ((sides(obj)[2] < 0 && sides(obj)[3] < l) || (sides(obj)[2] < 0 && sides(obj)[3] < 0)) && ((sides(obj)[4] < 0 && sides(obj)[5] < w) || (sides(obj)[4] < 0 && sides(obj)[5] < 0))) {
-      if(((y+vy < obj.y+obj.h/2+h/2) && (y+vy > obj.y+3*obj.h/8+3*h/8) && vy < 0)/* || (sides(obj)[0] > sides(obj)[1] && sides(obj)[0] > sides(obj)[2] && sides(obj)[0] > sides(obj)[3] && sides(obj)[0] > sides(obj)[4] && sides(obj)[0] > sides(obj)[5])*/) { 
+      if(((y+vy < obj.y+obj.h/2+h/2) && (y+vy > obj.y+3*obj.h/8+3*h/8) && vy < 0 && !obj.neighbors()[2])/* || (sides(obj)[0] > sides(obj)[1] && sides(obj)[0] > sides(obj)[2] && sides(obj)[0] > sides(obj)[3] && sides(obj)[0] > sides(obj)[4] && sides(obj)[0] > sides(obj)[5])*/) { 
         vy = 0;
         y = obj.y+obj.h/2+h/2-2*vy;
-      } else if(((y+vy > obj.y-obj.h/2-h/2) && (y+vy < obj.y-3*obj.h/8-3*h/8) && vy > 0)) {//sides(obj)[1] > sides(obj)[0] && sides(obj)[1] > sides(obj)[2] && sides(obj)[1] > sides(obj)[3] && sides(obj)[1] > sides(obj)[4] && sides(obj)[1] > sides(obj)[5]) { 
+      } else if(((y+vy > obj.y-obj.h/2-h/2) && (y+vy < obj.y-3*obj.h/8-3*h/8) && vy > 0) && !obj.neighbors()[3]) {//sides(obj)[1] > sides(obj)[0] && sides(obj)[1] > sides(obj)[2] && sides(obj)[1] > sides(obj)[3] && sides(obj)[1] > sides(obj)[4] && sides(obj)[1] > sides(obj)[5]) { 
         jump = true;
         gravity = false;
         canDash = true;
         vy = 0;
         y = obj.y-obj.h/2-h/2-2*vy;
-      } if(((yc == obj.yc || yc+1 == obj.yc) && (x+vx < obj.x+obj.l/2+l/2) && (x+vx > obj.x+3*obj.l/8+3*l/8) && vx < 0) /*sides(obj)[2] > sides(obj)[0] && sides(obj)[2] > sides(obj)[1] && sides(obj)[2] > sides(obj)[3] && sides(obj)[2] > sides(obj)[4] && sides(obj)[2] > sides(obj)[5]*/) { 
+      } if(((yc == obj.yc || yc+1 == obj.yc) && (x+vx < obj.x+obj.l/2+l/2) && (x+vx > obj.x+3*obj.l/8+3*l/8) && vx < 0 && !obj.neighbors()[1]) /*sides(obj)[2] > sides(obj)[0] && sides(obj)[2] > sides(obj)[1] && sides(obj)[2] > sides(obj)[3] && sides(obj)[2] > sides(obj)[4] && sides(obj)[2] > sides(obj)[5]*/) { 
         //xNegSideCol = true;
         x = obj.x+obj.l/2+l/2-vx;
-      } if(((yc == obj.yc || yc+1 == obj.yc) && (x+vx > obj.x-obj.l/2-l/2) && (x+vx < obj.x-3*obj.l/8-3*l/8) && vx > 0)) {//sides(obj)[3] > sides(obj)[0] && sides(obj)[3] > sides(obj)[1] && sides(obj)[3] > sides(obj)[2] && sides(obj)[3] > sides(obj)[4] && sides(obj)[3] > sides(obj)[5]) { 
+      } if(((yc == obj.yc || yc+1 == obj.yc) && (x+vx > obj.x-obj.l/2-l/2) && (x+vx < obj.x-3*obj.l/8-3*l/8) && vx > 0) && !obj.neighbors()[0]) {//sides(obj)[3] > sides(obj)[0] && sides(obj)[3] > sides(obj)[1] && sides(obj)[3] > sides(obj)[2] && sides(obj)[3] > sides(obj)[4] && sides(obj)[3] > sides(obj)[5]) { 
         //xPosSideCol = true;
         x = obj.x-obj.l/2-l/2-vx;
-      } if(((yc == obj.yc || yc+1 == obj.yc) && (z+vz < obj.z+obj.w/2+w/2) && (z+vz > obj.z+3*obj.w/8+3*w/8) && vz < 0)) {//sides(obj)[4] > sides(obj)[0] && sides(obj)[4] > sides(obj)[1] && sides(obj)[4] > sides(obj)[2] && sides(obj)[4] > sides(obj)[3] && sides(obj)[4] > sides(obj)[5]) { 
+      } if(((yc == obj.yc || yc+1 == obj.yc) && (z+vz < obj.z+obj.w/2+w/2) && (z+vz > obj.z+3*obj.w/8+3*w/8) && vz < 0) && !obj.neighbors()[5]) {//sides(obj)[4] > sides(obj)[0] && sides(obj)[4] > sides(obj)[1] && sides(obj)[4] > sides(obj)[2] && sides(obj)[4] > sides(obj)[3] && sides(obj)[4] > sides(obj)[5]) { 
         //zNegSideCol = true;
         z = obj.z+obj.w/2+w/2-vz;
-      } if(((yc == obj.yc || yc+1 == obj.yc) && (z+vz > obj.z-obj.w/2-w/2) && (z+vz < obj.z-3*obj.w/8-3*w/8) && vz > 0)) {//sides(obj)[5] > sides(obj)[0] && sides(obj)[5] > sides(obj)[1] && sides(obj)[5] > sides(obj)[2] && sides(obj)[5] > sides(obj)[3] && sides(obj)[5] > sides(obj)[4]) { 
+      } if(((yc == obj.yc || yc+1 == obj.yc) && (z+vz > obj.z-obj.w/2-w/2) && (z+vz < obj.z-3*obj.w/8-3*w/8) && vz > 0) && !obj.neighbors()[4]) {//sides(obj)[5] > sides(obj)[0] && sides(obj)[5] > sides(obj)[1] && sides(obj)[5] > sides(obj)[2] && sides(obj)[5] > sides(obj)[3] && sides(obj)[5] > sides(obj)[4]) { 
         //zPosSideCol = true;
         z = obj.z-obj.w/2-w/2-vz;
       }
