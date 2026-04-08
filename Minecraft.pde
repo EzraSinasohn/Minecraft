@@ -6,11 +6,12 @@ PeasyCam cam;
 ArrayList<Ground> ground = new ArrayList<Ground>();
 ArrayList<Ground> nearbyGround = new ArrayList<Ground>();
 float camX = 0, camY = 0, camZ = 100, camRX = 0, camRY = 0, camVY = 0, handAngle = 0;
+int hotbarSlot;
 boolean punching = false;
 Player me = new Player(0, -25, 0, 6, 20, 6);
 void setup() {
-  //fullScreen(P3D);
-  size(1000, 800, P3D);
+  fullScreen(P3D);
+  //size(1000, 800, P3D);
   //ground.add(new Ground(0, -75, 0, 25, 25, 25, false));
   ground.add(new Ground(0, 1, 0, 10, 10, 10, false, 100, 100, 100));
   ground.add(new Ground(0, 1, -1, 10, 10, 10, false, 100, 100, 100));
@@ -41,6 +42,7 @@ void setup() {
   rectMode(CORNERS);
   lights();
   noCursor();
+  clip(0, 0, width, height);
   try {
     robot = new Robot();
   } 
@@ -57,6 +59,7 @@ void draw() {
   lightFalloff(1.0, 0.0, 0.0);
   ambientLight(120, 120, 120);
   pointLight(200, 200, 200, 140, -160, 144);
+  pointLight(me.x, me.y, me.z, 0, 0, 0);
   //noLights();
   pushMatrix();
   shininess(255);
@@ -114,6 +117,7 @@ void draw() {
   text(camRX, 30, 90);
   text(camRY, 90, 90);
   text(sin(camRY), 150, 90);
+  hotbar();
   cam.endHUD();
   //interactLine();
   findLookAt();
@@ -124,7 +128,7 @@ public void playerHand() {
   translate(me.x, me.y-eyeHeight, me.z);
   rotateY(-camRX);
   rotateZ(camRY);
-  translate(12, 6.1, 6);
+  translate(10, 6.1, 6);
   rotateX(PI/8);
   rotateY(PI/8);
   rotateZ(PI/5);
@@ -133,6 +137,7 @@ public void playerHand() {
   rotateY(handAngle/4);
   rotateZ(handAngle);
   translate(-2, -2, 2);
+  noStroke();
   fill(255, 120, 0);
   box(3, 10, 3);
   popMatrix();
@@ -150,10 +155,26 @@ public void punch() {
   }
 }
 
+public void use() {
+  boolean occupiedBlock = false;
+  for(int i = 0; i < nearbyGround.size(); i++) {
+    if(nearbyGround.get(i).xc == placerCandidates.get(0)[0] && nearbyGround.get(i).yc == placerCandidates.get(0)[1] && nearbyGround.get(i).zc == placerCandidates.get(i)[2]) {
+      occupiedBlock = true;
+      break;
+    }
+  }
+  if(placerCandidates.size() > 0 && !occupiedBlock) {
+    ground.add(new Ground(Math.round(placerCandidates.get(0)[0]/10), Math.round(-placerCandidates.get(0)[1]/10), Math.round(placerCandidates.get(0)[2]/10), 10, 10, 10, false, 150, 100, 60));
+  }
+}
+
 public void mouseClicked() {
   if(mouseButton == LEFT) {
     punch();
     punching = true;
+  }
+  if(mouseButton == RIGHT) {
+    use();
   }
 }
 
@@ -161,6 +182,55 @@ public void mouseReleased() {
   if(mouseButton == LEFT) {
     punching = false;
   }
+  if(mouseButton == RIGHT) {
+    punching = false;
+  }
+}
+
+public void mouseWheel(MouseEvent event) {
+  if(event.getCount() < 0) {
+    if(hotbarSlot > 0) {
+      hotbarSlot--;
+    } else {
+      hotbarSlot = 8;
+    }
+  } else {
+    if(hotbarSlot < 8) {
+      hotbarSlot++;
+    } else {
+      hotbarSlot = 0;
+    }
+  }
+}
+
+public void makeSlot(int numSlot) {
+  fill(100, 50);
+  if(numSlot == hotbarSlot) {
+    stroke(220);
+    strokeWeight(6);
+  } else {
+    stroke(150);
+    strokeWeight(4);
+  }
+  rect(width/2-238.5+numSlot*53, height-10, width/2-188.5+numSlot*53, height-60);
+  stroke(0);
+  strokeWeight(1);
+  rect(width/2-235.5+numSlot*53, height-13, width/2-191.5+numSlot*53, height-57);
+}
+
+public void hotbar() {
+  for(int i = 0; i < 9; i++) {
+    makeSlot(i);
+    stroke(0);
+    strokeWeight(1);
+    //rect(width/2-240.5+i*53, height-7, width/2-186.5+i*53, height-63);
+  }
+  stroke(220);
+  strokeWeight(6);
+  rect(width/2-238.5+hotbarSlot*53, height-10, width/2-188.5+hotbarSlot*53, height-60);
+  stroke(0);
+  strokeWeight(2);
+  rect(width/2-241.5+hotbarSlot*53, height-7, width/2-185.5+hotbarSlot*53, height-63);
 }
 
 public void crosshair() {
