@@ -1,7 +1,7 @@
 class Ground {
   public int xc, yc, zc;
   public float x, y, z, l, w, h, r, g, b;
-  public boolean stair, highlighted, nearby;
+  public boolean stair, highlighted, nearby, placer;
   public Ground(float xPos, float yPos, float zPos, float myLength, float myHeight, float myWidth, boolean s, float red, float green, float blue) {
     x = xPos*10;
     y = -yPos*10;
