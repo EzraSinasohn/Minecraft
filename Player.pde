@@ -2,7 +2,7 @@ public boolean[] keys = new boolean[10];
 public float eyeHeight = 8.1;
 class Player {
   int xc, yc, zc;
-  float x, y, z, l, w, h, rotation, vx, vy, vz, vxs, vxc, vzs, vzc, sprint, limbR, speed = 0.9;
+  float x, y, z, l, w, h, rotation, vx, vy, vz, vxs, vxc, vzs, vzc, sprint, limbR, speed = 0.7;
   boolean jump = false, gravity = true, xPosSideCol = false, zPosSideCol = false, xNegSideCol = false, zNegSideCol = false, canDash = false;
   public Player(float xPos, float yPos, float zPos, float myLength, float myHeight, float myWidth) {
     x = xPos;
