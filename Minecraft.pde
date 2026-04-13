@@ -5,6 +5,7 @@ Robot robot;
 PeasyCam cam;
 ArrayList<Ground> ground = new ArrayList<Ground>();
 ArrayList<Ground> nearbyGround = new ArrayList<Ground>();
+ArrayList<float[]> blockCoords = new ArrayList<float[]>();
 float camX = 0, camY = 0, camZ = 100, camRX = 0, camRY = 0, camVY = 0, handAngle = 0;
 int hotbarSlot;
 boolean punching = false;
@@ -78,7 +79,10 @@ void draw() {
   }
   moveCam();
   me.jump = false;
+  blockCoords.clear();
   for(int i = 0; i < nearbyGround.size(); i++) {
+    float[] tempCoords = {nearbyGround.get(i).x, nearbyGround.get(i).y, nearbyGround.get(i).z};
+    blockCoords.add(tempCoords);
     me.collision(nearbyGround.get(i));
   }
   me.move();
