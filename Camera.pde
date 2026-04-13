@@ -66,7 +66,7 @@ public void moveCam() {
 public void findPlacerCandidates() {
   placerCandidates.clear();   
   placerBlocks.clear();
-  for(int i = 0; i < 50; i++) {
+  for(int i = 15; i < 50; i++) {
     fill(5*i, 0, 0);
     noStroke();
     pushMatrix();
@@ -84,7 +84,18 @@ public void findPlacerCandidates() {
     translate(plX, plY, plZ);
     //box(1);
     popMatrix();
-    placerBlocks.add(i, blockHighlighted);
+    for(int n = 0; n < nearbyGround.size(); n++) {
+      /*float[] tempCoords = {nearbyGround.get(n).x, nearbyGround.get(n).y, nearbyGround.get(n).z};
+      if(tempCoords.equals(blockHighlighted)) {
+        i = 50;
+        break;
+      }*/
+      if(Math.abs(blockHighlighted[0]-nearbyGround.get(n).x) <= 5 && Math.abs(blockHighlighted[1]-nearbyGround.get(n).y) <= 5 && Math.abs(blockHighlighted[2]-nearbyGround.get(n).z) <= 5) {
+        i = 50;
+        break;
+      }
+    }
+    if(i < 50) {placerBlocks.add(blockHighlighted);}
   }
   for(int i = 0; i < nearbyGround.size(); i++) {
     nearbyGround.get(i).nearby = true;
@@ -98,6 +109,13 @@ public void findPlacerCandidates() {
   for(int n = 0; n < placerCandidates.size(); n++) {
     for(int i = 0; i < placerCandidates.size()-1; i++) {
       if(Math.sqrt((placerCandidates.get(i)[0]-me.x)*(placerCandidates.get(i)[0]-me.x)+(placerCandidates.get(i)[1]-me.y)*(placerCandidates.get(i)[1]-me.y)+(placerCandidates.get(i)[2]-me.z)*(placerCandidates.get(i)[2]-me.z)) < Math.sqrt((placerCandidates.get(i+1)[0]-me.x)*(placerCandidates.get(i+1)[0]-me.x)+(placerCandidates.get(i+1)[1]-me.y)*(placerCandidates.get(i+1)[1]-me.y)+(placerCandidates.get(i+1)[2]-me.z)*(placerCandidates.get(i+1)[2]-me.z))) {
+        placerCandidates.remove(i);
+      }
+    }
+  }
+  for(int n = 0; n < nearbyGround.size(); n++) {
+    for(int i = 0; i < placerCandidates.size(); i++) {
+      if(Math.abs(placerCandidates.get(i)[0]-nearbyGround.get(n).x) <= 5 && Math.abs(placerCandidates.get(i)[1]-nearbyGround.get(n).y) <= 5 && Math.abs(placerCandidates.get(i)[2]-nearbyGround.get(n).z) <= 5) {
         placerCandidates.remove(i);
       }
     }
