@@ -93,7 +93,7 @@ void draw() {
     if(millis()%7 > 0) {handAngle += PI/8;}
   }
   else {handAngle = 0;}
-  playerHand();
+  //playerHand();
   /*text(camRY, 0, -80);
   text(me.sides(ground.get(0))[0], -100, 0, -20);
   text(me.sides(ground.get(0))[1], -20, 0, -20);
@@ -122,8 +122,24 @@ void draw() {
   text(camRY, 90, 90);
   text(sin(camRY), 150, 90);
   hotbar();
+  pushMatrix();
+  //rotateY(-camRX);
+  //rotateZ(camRY);
+  //rotateY(PI);
+  translate(width-100, height-60, 0);
+  rotateX(PI/8);
+  rotateY(PI+PI/8);
+  rotateZ(PI/4);
+  translate(2, 2, -2);
+  //rotateX(handAngle);
+  rotateY(handAngle/4);
+  rotateZ(handAngle);
+  //translate(-20, -20, 20);
+  noStroke();
+  fill(255, 120, 0);
+  box(200, 800, 200);
+  popMatrix();
   cam.endHUD();
-  //interactLine();
   findLookAt();
 }
 
