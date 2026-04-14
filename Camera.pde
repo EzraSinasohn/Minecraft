@@ -148,7 +148,7 @@ public void findLookAt() {
     highlightedBlocks.add(blockHighlighted);
   }
   for(int i = 0; i < ground.size(); i++) {
-    if(!highlightedBlocks.contains(ground.get(i))) {ground.get(i).highlighted = false;}
+    ground.get(i).highlighted = false;
   }
   for(int i = 0; i < nearbyGround.size(); i++) {
     nearbyGround.get(i).nearby = true;
