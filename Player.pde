@@ -2,7 +2,7 @@ public boolean[] keys = new boolean[10];
 public float eyeHeight = 8.1;
 class Player {
   int xc, yc, zc;
-  float x, y, z, l, w, h, rotation, vx, vy, vz, vxs, vxc, vzs, vzc, sprint, limbR, speed = 0.7;
+  float x, y, z, l, w, h, rotation, vx, vy, vz, vxs, vxc, vzs, vzc, sprint, limbR, speed = 0.55;
   boolean jump = false, gravity = true, xPosSideCol = false, zPosSideCol = false, xNegSideCol = false, zNegSideCol = false, canDash = false;
   public Player(float xPos, float yPos, float zPos, float myLength, float myHeight, float myWidth) {
     x = xPos;
@@ -32,7 +32,6 @@ class Player {
   }
   
   public void move() {
-    sideCol();
     if(keys[9]) {sprint = 1.3;} else {sprint = 1;}
     if(keys[8] && jump) {
       jump = false;
@@ -67,16 +66,16 @@ class Player {
     y += vy;
     z += vz;
     if(!(keys[6] || keys[7])) {
-      if(xNegSideCol) {vxs = 0;} else {vxs *= 0.9;}
+      if(xNegSideCol) {vxs = 0;} else {vxs *= 0.85;}
     }
     if(!(keys[4] || keys[5])) {
-      if(xPosSideCol) {vxc = 0;} else {vxc *= 0.9;}
+      if(xPosSideCol) {vxc = 0;} else {vxc *= 0.85;}
     }
     if(!(keys[4] || keys[5])) {
-      if(zNegSideCol) {vzs = 0;} else {vzs *= 0.9;}
+      if(zNegSideCol) {vzs = 0;} else {vzs *= 0.85;}
     }
     if(!(keys[6] || keys[7])) {
-      if(zPosSideCol) {vzc = 0;} else {vzc *= 0.9;}
+      if(zPosSideCol) {vzc = 0;} else {vzc *= 0.85;}
     }
     //show();
     if(vy < 3 && gravity) {vy += 0.08;}
@@ -128,10 +127,6 @@ class Player {
     }
   }
   
-  public void sideCol() {
-    
-  }
-
   
   public float[] sides(Ground obj) {
     float[] dim = {y+vy-h/2-(obj.y+obj.h/2), -y-vy+h/2+(obj.y-obj.h/2), x+vx-l/2-(obj.x+obj.l/2), -x-vx+l/2+(obj.x-obj.l/2), z+vz-w/2-(obj.z+obj.w/2), -z-vz+w/2+(obj.z-obj.w/2)};
