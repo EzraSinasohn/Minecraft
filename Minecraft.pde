@@ -8,6 +8,9 @@ ArrayList<Ground> nearbyGround = new ArrayList<Ground>();
 ArrayList<float[]> blockCoords = new ArrayList<float[]>();
 float camX = 0, camY = 0, camZ = 100, camRX = 0, camRY = 0, camVY = 0, handAngle = 0;
 int hotbarSlot;
+int[] blockRed = new int[9];
+int[] blockGreen = new int[9];
+int[] blockBlue = new int[9];
 boolean punching = false;
 Player me = new Player(0, -25, 0, 6, 20, 6);
 void setup() {
@@ -39,6 +42,37 @@ void setup() {
     ground.add(new Ground(i, 2, 6, 10, 10, 10, false, 0, 150, 150));
     ground.add(new Ground(i, 3, 6, 10, 10, 10, false, 0, 150, 150));
   }
+  
+  blockRed[0] = 150;
+  blockRed[1] = 0;
+  blockRed[2] = 255;
+  blockRed[3] = 0;
+  blockRed[4] = 100;
+  blockRed[5] = 150;
+  blockRed[6] = 0;
+  blockRed[7] = 250;
+  blockRed[8] = 255;
+  
+  blockGreen[0] = 100;
+  blockGreen[1] = 150;
+  blockGreen[2] = 0;
+  blockGreen[3] = 150;
+  blockGreen[4] = 100;
+  blockGreen[5] = 0;
+  blockGreen[6] = 0;
+  blockGreen[7] = 100;
+  blockGreen[8] = 255;
+  
+  blockBlue[0] = 60;
+  blockBlue[1] = 0;
+  blockBlue[2] = 0;
+  blockBlue[3] = 150;
+  blockBlue[4] = 100;
+  blockBlue[5] = 150;
+  blockBlue[6] = 255;
+  blockBlue[7] = 0;
+  blockBlue[8] = 255;
+  
   //ground.add(new Ground(0, 0, 0, 1000, 10, 1000, false, 0, 150, 0));
   rectMode(CORNERS);
   lights();
@@ -176,6 +210,44 @@ public void punch() {
 }
 
 public void use() {
+  int red = 0, green = 0, blue = 0;
+  if(hotbarSlot == 0) {
+    red = 150;
+    green = 100;
+    blue = 60;
+  } else if(hotbarSlot == 1) {
+    red = 0;
+    green = 150;
+    blue = 0;
+  } else if(hotbarSlot == 2) {
+    red = 255;
+    green = 0;
+    blue = 0;
+  } else if(hotbarSlot == 3) {
+    red = 0;
+    green = 150;
+    blue = 150;
+  } else if(hotbarSlot == 4) {
+    red = 100;
+    green = 100;
+    blue = 100;
+  } else if(hotbarSlot == 5) {
+    red = 150;
+    green = 0;
+    blue = 150;
+  } else if(hotbarSlot == 6) {
+    red = 0;
+    green = 0;
+    blue = 255;
+  } else if(hotbarSlot == 7) {
+    red = 250;
+    green = 100;
+    blue = 0;
+  } else if(hotbarSlot == 8) {
+    red = 255;
+    green = 255;
+    blue = 255;
+  }
   boolean occupiedBlock = false;
   for(int i = 0; i < nearbyGround.size(); i++) {
     if(nearbyGround.get(i).xc == placerCandidates.get(0)[0] && nearbyGround.get(i).yc == placerCandidates.get(0)[1] && nearbyGround.get(i).zc == placerCandidates.get(i)[2]) {
@@ -184,7 +256,7 @@ public void use() {
     }
   }
   if(placerCandidates.size() > 0 && !occupiedBlock) {
-    ground.add(new Ground(Math.round(placerCandidates.get(0)[0]/10), Math.round(-placerCandidates.get(0)[1]/10), Math.round(placerCandidates.get(0)[2]/10), 10, 10, 10, false, 150, 100, 60));
+    ground.add(new Ground(Math.round(placerCandidates.get(0)[0]/10), Math.round(-placerCandidates.get(0)[1]/10), Math.round(placerCandidates.get(0)[2]/10), 10, 10, 10, false, red, green, blue));
   }
 }
 
@@ -236,6 +308,8 @@ public void makeSlot(int numSlot) {
   stroke(0);
   strokeWeight(1);
   rect(width/2-235.5+numSlot*53, height-13, width/2-191.5+numSlot*53, height-57);
+  fill(blockRed[numSlot], blockGreen[numSlot], blockBlue[numSlot]);
+  rect(width/2-235.5+numSlot*53, height-13, width/2-191.5+numSlot*53, height-57);
 }
 
 public void hotbar() {
@@ -245,6 +319,7 @@ public void hotbar() {
     strokeWeight(1);
     //rect(width/2-240.5+i*53, height-7, width/2-186.5+i*53, height-63);
   }
+  noFill();
   stroke(220);
   strokeWeight(6);
   rect(width/2-238.5+hotbarSlot*53, height-10, width/2-188.5+hotbarSlot*53, height-60);
