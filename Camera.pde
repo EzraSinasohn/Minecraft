@@ -59,7 +59,7 @@ public void moveCam() {
   camX = me.x+cos(camRX)*cos(camRY);
   camY = me.y-eyeHeight+sin(camRY);
   camZ = me.z+sin(camRX)*cos(camRY);
-  perspective(PI/3.0, float(width)/float(height), ((height/2.0) / tan(PI*60.0/360.0))/2000, ((height/2.0) / tan(PI*60.0/360.0))*10);
+  perspective(PI/2.0, float(width)/float(height), ((height/2.0) / tan(PI*60.0/360.0))/2000, ((height/2.0) / tan(PI*60.0/360.0))*10);
   camera(me.x, me.y-eyeHeight, me.z, camX, camY, camZ, 0, 1, 0);
 }
 
