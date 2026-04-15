@@ -1,7 +1,7 @@
-public boolean snapMouse = true;
+public boolean snapMouse = true, canPlace = false;
 public float logMouseX, logMouseY, hlX, hlY, hlZ, plX, plY, plZ;
 public float punchTimer = 0;
-public int indexOfBlock = 0;
+public int indexOfBlock = 0, placeCooldownStart = 0;
 public float[] placeBlock;
 public ArrayList <float[]> highlightedBlocks = new ArrayList<float[]>();
 public ArrayList <float[]> placerBlocks = new ArrayList<float[]>();
@@ -64,6 +64,7 @@ public void moveCam() {
 }
 
 public void findPlacerCandidates() {
+  canPlace = false;
   placerCandidates.clear();   
   placerBlocks.clear();
   for(int i = 15; i < 50; i++) {
@@ -122,6 +123,9 @@ public void findPlacerCandidates() {
   }
   if(highlightCandidates.size() == 0) {
     placerCandidates.clear();
+  }
+  if(placerCandidates.size() > 0) {
+    canPlace = true;
   }
   nearbyGround.clear();
 }
