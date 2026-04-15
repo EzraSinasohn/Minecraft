@@ -171,10 +171,21 @@ void draw() {
   //translate(-20, -20, 20);
   noStroke();
   fill(255, 120, 0);
+  //fill(blockRed[hotbarSlot], blockGreen[hotbarSlot], blockBlue[hotbarSlot]);
   box(200, 800, 200);
+  translate(0, -400, 0);
+  fill(blockRed[hotbarSlot], blockGreen[hotbarSlot], blockBlue[hotbarSlot]);
+  box(250);
   popMatrix();
   cam.endHUD();
   findLookAt();
+  if(canPlace && mousePressed && mouseButton == RIGHT && millis()-placeCooldownStart > 200) {
+    placeCooldownStart = millis();
+    use();
+  }
+  if(!mousePressed) {
+    placeCooldownStart = 0;
+  }
 }
 
 public void playerHand() {
@@ -206,10 +217,13 @@ public void punch() {
       ground.remove(i);
       break;
     }
-  }
+   }
 }
 
 public void use() {
+  punchTimer = millis();
+  punching = true;
+  handAngle = -PI/8;
   int red = 0, green = 0, blue = 0;
   if(hotbarSlot == 0) {
     red = 150;
@@ -266,7 +280,8 @@ public void mouseClicked() {
     punching = true;
   }
   if(mouseButton == RIGHT) {
-    use();
+    placeCooldownStart = millis();
+    //use();
   }
 }
 
