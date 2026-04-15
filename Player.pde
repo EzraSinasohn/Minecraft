@@ -32,7 +32,7 @@ class Player {
   }
   
   public void move() {
-    if(keys[9]) {sprint = 1.3;} else {sprint = 1;}
+    if(keys[9]) {sprint = 1.6;} else {sprint = 1;}
     if(keys[8] && jump) {
       jump = false;
       vy = -1.3;
@@ -65,17 +65,33 @@ class Player {
     x += vx;
     y += vy;
     z += vz;
-    if(!(keys[6] || keys[7])) {
-      if(xNegSideCol) {vxs = 0;} else {vxs *= 0.85;}
-    }
-    if(!(keys[4] || keys[5])) {
-      if(xPosSideCol) {vxc = 0;} else {vxc *= 0.85;}
-    }
-    if(!(keys[4] || keys[5])) {
-      if(zNegSideCol) {vzs = 0;} else {vzs *= 0.85;}
-    }
-    if(!(keys[6] || keys[7])) {
-      if(zPosSideCol) {vzc = 0;} else {vzc *= 0.85;}
+    if(jump) {
+      if(!(keys[6] || keys[7])) {
+        if(xNegSideCol) {vxs = 0;} else {vxs *= 0.85;
+      }
+      }
+      if(!(keys[4] || keys[5])) {
+        if(xPosSideCol) {vxc = 0;} else {vxc *= 0.85;}
+      }
+      if(!(keys[4] || keys[5])) {
+        if(zNegSideCol) {vzs = 0;} else {vzs *= 0.85;}
+      }
+      if(!(keys[6] || keys[7])) {
+        if(zPosSideCol) {vzc = 0;} else {vzc *= 0.85;}
+      }
+    } else {
+      if(!(keys[6] || keys[7])) {
+        if(xNegSideCol) {vxs = 0;} else {vxs *= 0.99;}
+      }
+      if(!(keys[4] || keys[5])) {
+        if(xPosSideCol) {vxc = 0;} else {vxc *= 0.99;}
+      }
+      if(!(keys[4] || keys[5])) {
+        if(zNegSideCol) {vzs = 0;} else {vzs *= 0.99;}
+      }
+      if(!(keys[6] || keys[7])) {
+        if(zPosSideCol) {vzc = 0;} else {vzc *= 0.99;}
+      }
     }
     //show();
     if(vy < 3 && gravity) {vy += 0.08;}
