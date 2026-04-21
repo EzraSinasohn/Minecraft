@@ -96,13 +96,6 @@ void draw() {
   pointLight(200, 200, 200, 140, -160, 144);
   pointLight(me.x, me.y, me.z, 0, 0, 0);
   //noLights();
-  pushMatrix();
-  shininess(255);
-  emissive(20);
-  fill(250, 250, 100);
-  translate(140, -160, 144);
-  ellipse(0, 0, 10, 10);
-  popMatrix();
   for(int i = 0; i < ground.size(); i++) {
     if(Math.sqrt((ground.get(i).x-me.x)*(ground.get(i).x-me.x) + (ground.get(i).y-me.y)*(ground.get(i).y-me.y) + (ground.get(i).z-me.z)*(ground.get(i).z-me.z)) < 50 && !nearbyGround.contains(ground.get(i))) {nearbyGround.add(ground.get(i));}
   }
@@ -272,6 +265,20 @@ public void use() {
   if(placerCandidates.size() > 0 && !occupiedBlock) {
     ground.add(new Ground(Math.round(placerCandidates.get(0)[0]/10), Math.round(-placerCandidates.get(0)[1]/10), Math.round(placerCandidates.get(0)[2]/10), 10, 10, 10, false, red, green, blue));
   }
+}
+
+public int[] turnCoords(float x, float y, float z) {
+  int[] newCoords = {(int) ((x-5)/10), (int) (-(y+5)/10), (int) ((z-5)/10)};
+  return newCoords;
+}
+
+public int[] turnCoords(float[] coordsList) {
+  int[] newCoords = {(int) ((coordsList[0]-5)/10), (int) (-(coordsList[1]+5)/10), (int) ((coordsList[2]-5)/10)};
+  return newCoords;
+}
+
+public int turnY(float y) {
+  return (int) (-y/10);
 }
 
 public void mouseClicked() {
