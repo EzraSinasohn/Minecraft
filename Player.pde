@@ -1,8 +1,10 @@
-public boolean[] keys = new boolean[10];
+public boolean[] keys = new boolean[11];
+public boolean crouching = true;
+public int[] crouchBlock;
 public float eyeHeight = 8.1;
 class Player {
   int xc, yc, zc;
-  float x, y, z, l, w, h, rotation, vx, vy, vz, vxs, vxc, vzs, vzc, sprint, limbR, speed = 0.55;
+  float x, y, z, l, w, h, rotation, vx, vy, vz, vxs, vxc, vzs, vzc, sprint, limbR, speed = 0.55, crouchSpeed = 1;
   boolean jump = false, gravity = true, xPosSideCol = false, zPosSideCol = false, xNegSideCol = false, zNegSideCol = false, canDash = false;
   public Player(float xPos, float yPos, float zPos, float myLength, float myHeight, float myWidth) {
     x = xPos;
@@ -32,26 +34,34 @@ class Player {
   }
   
   public void move() {
-    if(keys[9]) {sprint = 1.6;} else {sprint = 1;}
+    if(keys[10]) {
+      eyeHeight = 5.1;
+      //h = 15;
+    } else {
+      eyeHeight = 8.1;
+      //h = 20;
+    }
+    if(keys[9] && !keys[10]) {sprint = 1.6;} else {sprint = 1;}
+    if(keys[10]) {crouchSpeed = 0.347;} else {crouchSpeed = 1;}
     if(keys[8] && jump) {
       jump = false;
       vy = -1.3;
     } if(keys[4]) {  //DOWN
       rotation = camRX+PI;
-      vxc = -cos(camRX)*speed;
-      vzs = -sin(camRX)*speed;
+      vxc = -cos(camRX)*speed*crouchSpeed;
+      vzs = -sin(camRX)*speed*crouchSpeed;
     } if(keys[5]) {  //UP
       rotation = camRX;
-      vxc = cos(camRX)*speed*sprint;
-      vzs = sin(camRX)*speed*sprint;
+      vxc = cos(camRX)*speed*sprint*crouchSpeed;
+      vzs = sin(camRX)*speed*sprint*crouchSpeed;
     } if(keys[6]) {  //LEFT
       rotation = camRX+PI/2;
-      vxs = -sin(camRX)*speed;
-      vzc = cos(camRX)*speed;
+      vxs = -sin(camRX)*speed*crouchSpeed;
+      vzc = cos(camRX)*speed*crouchSpeed;
     } if(keys[7]) {  //RIGHT
       rotation = camRX-PI/2;
-      vxs = sin(camRX)*speed;
-      vzc = -cos(camRX)*speed;
+      vxs = sin(camRX)*speed*crouchSpeed;
+      vzc = -cos(camRX)*speed*crouchSpeed;
     } if(keys[4] && keys[6]) {rotation = camRX+PI-PI/4;}
     if(keys[4] && keys[7]) {rotation = camRX+PI+PI/4;}
     if(keys[5] && keys[6]) {rotation = camRX+PI+PI/4;}
@@ -67,8 +77,7 @@ class Player {
     z += vz;
     if(jump) {
       if(!(keys[6] || keys[7])) {
-        if(xNegSideCol) {vxs = 0;} else {vxs *= 0.85;
-      }
+        if(xNegSideCol) {vxs = 0;} else {vxs *= 0.85;}
       }
       if(!(keys[4] || keys[5])) {
         if(xPosSideCol) {vxc = 0;} else {vxc *= 0.85;}
@@ -81,16 +90,16 @@ class Player {
       }
     } else {
       if(!(keys[6] || keys[7])) {
-        if(xNegSideCol) {vxs = 0;} else {vxs *= 0.99;}
+        if(xNegSideCol) {vxs = 0;} else {vxs *= 0.85;}
       }
       if(!(keys[4] || keys[5])) {
-        if(xPosSideCol) {vxc = 0;} else {vxc *= 0.99;}
+        if(xPosSideCol) {vxc = 0;} else {vxc *= 0.85;}
       }
       if(!(keys[4] || keys[5])) {
-        if(zNegSideCol) {vzs = 0;} else {vzs *= 0.99;}
+        if(zNegSideCol) {vzs = 0;} else {vzs *= 0.85;}
       }
       if(!(keys[6] || keys[7])) {
-        if(zPosSideCol) {vzc = 0;} else {vzc *= 0.99;}
+        if(zPosSideCol) {vzc = 0;} else {vzc *= 0.85;}
       }
     }
     //show();
@@ -102,7 +111,7 @@ class Player {
     zNegSideCol = false;
     if(y > 100) {
       x = 0;
-      y = -25;
+      y = -250;
       z = 0;
     }
     xc = (int) ((x-5)/10);
@@ -147,24 +156,40 @@ class Player {
   public float[] sides(Ground obj) {
     float[] dim = {y+vy-h/2-(obj.y+obj.h/2), -y-vy+h/2+(obj.y-obj.h/2), x+vx-l/2-(obj.x+obj.l/2), -x-vx+l/2+(obj.x-obj.l/2), z+vz-w/2-(obj.z+obj.w/2), -z-vz+w/2+(obj.z-obj.w/2)};
     return dim;
-  } 
+  }
+  
+  public float[][] cornerCheck() {
+    float[] tempCorner1 = {me.x+3, me.z+3};
+    float[] tempCorner2 = {me.x+3, me.z-3};
+    float[] tempCorner3 = {me.x-3, me.z+3};
+    float[] tempCorner4 = {me.x-3, me.z-3};
+    float[][] tempCorners = {tempCorner1, tempCorner2, tempCorner3, tempCorner4};
+    return tempCorners;
+  }
 }
 
 
 public void keyPressed() {
   if(key == 'm') {
     snapMouse = !snapMouse;
+  } if(keyCode == SHIFT) {
+    keys[10] = true;
+    if(!crouching) {
+      int[] tempCrouchBlock = {me.xc, me.zc};
+      crouchBlock = tempCrouchBlock;
+    }
+    crouching = true;
   } if(key == 'r' || keyCode == CONTROL) {
     keys[9] = true;
   } if(key == ' ') {
     keys[8] = true;
-  } if(key == 'a') {
+  } if(key == 'a' || key == 'A') {
     keys[7] = true;
-  } if(key == 'd') {
+  } if(key == 'd' || key == 'D') {
     keys[6] = true;
-  } if(key == 'w') {
+  } if(key == 'w' || key == 'W') {
     keys[5] = true;
-  } if(key == 's') {
+  } if(key == 's' || key == 'S') {
     keys[4] = true;
   } if(keyCode == LEFT) {
     keys[7] = true;
@@ -180,17 +205,20 @@ public void keyPressed() {
 }
 
 public void keyReleased() {
-  if(key == 'r' || keyCode == CONTROL) {
+  if(keyCode == SHIFT) {
+    keys[10] = false;
+    crouching = false;
+  } if(key == 'r' || keyCode == CONTROL) {
     keys[9] = false;
   } if(key == ' ') {
     keys[8] = false;
-  } if(key == 'a') {
+  } if(key == 'a' || key == 'A') {
     keys[7] = false;
-  } if(key == 'd') {
+  } if(key == 'd' || key == 'D') {
     keys[6] = false;
-  } if(key == 'w') {
+  } if(key == 'w' || key == 'W') {
     keys[5] = false;
-  } if(key == 's') {
+  } if(key == 's' || key == 'S') {
     keys[4] = false;
   } if(keyCode == LEFT) {
     keys[7] = false;
