@@ -67,7 +67,7 @@ public void findPlacerCandidates() {
   canPlace = false;
   placerCandidates.clear();   
   placerBlocks.clear();
-  for(int i = 15; i < 50; i++) {
+  for(int i = 0; i < 50; i++) {
     fill(5*i, 0, 0);
     noStroke();
     pushMatrix();
@@ -119,6 +119,11 @@ public void findPlacerCandidates() {
       if(Math.abs(placerCandidates.get(i)[0]-nearbyGround.get(n).x) <= 5 && Math.abs(placerCandidates.get(i)[1]-nearbyGround.get(n).y) <= 5 && Math.abs(placerCandidates.get(i)[2]-nearbyGround.get(n).z) <= 5) {
         placerCandidates.remove(i);
       }
+    }
+  }
+  for(int i = placerCandidates.size()-1; i >= 0; i--) {
+    if(Math.abs(placerCandidates.get(i)[0]-(me.x+me.vx)) <= 10 && Math.abs(placerCandidates.get(i)[1]-(me.y+me.vy)) <= 15 && Math.abs(placerCandidates.get(i)[2]-(me.z+me.vz)) <= 10) {
+      placerCandidates.remove(i);
     }
   }
   if(highlightCandidates.size() == 0) {
@@ -206,3 +211,11 @@ public void findLookAt() {
   perspective(PI/3.0, float(width)/float(height), ((height/2.0) / tan(PI*60.0/360.0))/2000, ((height/2.0) / tan(PI*60.0/360.0))*10);
   camera(me.x, me.y-eyeHeight, me.z, camX, camY, camZ, 0, 1, 0);
 }*/
+
+/*for(int i = placerCandidates.size()-1; i >= 0; i--) {
+    float[] myCoords = {me.xc, me.yc, me.zc};
+    if(turnCoords(placerCandidates.get(i)).equals(myCoords) || turnCoords(placerCandidates.get(i)).equals(turnCoords(me.x, me.y-10, me.z))) {
+      System.out.println(placerCandidates.get(i));
+      placerCandidates.remove(i);
+    }
+  }*/
