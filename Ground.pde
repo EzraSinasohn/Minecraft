@@ -2,6 +2,7 @@ class Ground {
   public int xc, yc, zc;
   public float x, y, z, l, w, h, r, g, b;
   public boolean stair, highlighted, nearby, placer;
+  public PImage texture;
   public Ground(float xPos, float yPos, float zPos, float myLength, float myHeight, float myWidth, boolean s, float red, float green, float blue) {
     x = xPos*10;
     y = -yPos*10;
@@ -13,6 +14,20 @@ class Ground {
     r = red;
     g = green;
     b = blue;
+    xc = (int) (x/10);
+    yc = (int) (-y/10);
+    zc = (int) (z/10);
+  }
+  
+  public Ground(float xPos, float yPos, float zPos, float myLength, float myHeight, float myWidth, boolean s, PImage img) {
+    x = xPos*10;
+    y = -yPos*10;
+    z = zPos*10;
+    l = myLength;
+    w = myWidth;
+    h = myHeight;
+    stair = s;
+    texture = img;
     xc = (int) (x/10);
     yc = (int) (-y/10);
     zc = (int) (z/10);
