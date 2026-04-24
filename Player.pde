@@ -1,6 +1,6 @@
 public boolean[] keys = new boolean[11];
-public boolean crouching = true;
-public int[] crouchBlock;
+public boolean crouching = false;
+public int[] crouchBlock = new int[2];
 public float eyeHeight = 8.1;
 class Player {
   int xc, yc, zc;
@@ -37,8 +37,16 @@ class Player {
     if(keys[10]) {
       eyeHeight = 5.1;
       //h = 15;
+      boolean crouchHover = true;
+      for(int i = 0; i < nearbyGround.size(); i++) {
+        if(nearbyGround.get(i).xc-1 == me.xc && nearbyGround.get(i).yc == me.yc-1 && nearbyGround.get(i).zc-1 == me.zc) {crouchHover = false;}
+      }
+      int[] tempCrouchBlock = {me.xc, me.zc};
+      crouchBlock = tempCrouchBlock;
     } else {
       eyeHeight = 8.1;
+      int[] tempCrouchBlock = {me.xc, me.zc};
+      crouchBlock = tempCrouchBlock;
       //h = 20;
     }
     if(keys[9] && !keys[10]) {sprint = 1.6;} else {sprint = 1;}
@@ -117,6 +125,26 @@ class Player {
     xc = (int) ((x-5)/10);
     yc = (int) (-(y+5)/10);
     zc = (int) ((z-5)/10);
+    if(crouching && vy == 0) {
+      if(x > 0) {
+        if(x > crouchBlock[0]*10+16) {
+          x = crouchBlock[0]*10+16;
+        } else if(x < crouchBlock[0]*10-6) {
+          x = crouchBlock[0]*10-6;
+        }
+      } else {
+        
+      }
+      if(z > 0) {
+        if(z > crouchBlock[1]*10+3) {
+          //z = crouchBlock[1]*10+3;
+        } else if(z < crouchBlock[1]*10-13) {
+          //z = crouchBlock[1]*10-13;
+        }
+      } else {
+        
+      }
+    }
   }
   
   public void collision(Ground obj) {
@@ -174,10 +202,6 @@ public void keyPressed() {
     snapMouse = !snapMouse;
   } if(keyCode == SHIFT) {
     keys[10] = true;
-    if(!crouching) {
-      int[] tempCrouchBlock = {me.xc, me.zc};
-      crouchBlock = tempCrouchBlock;
-    }
     crouching = true;
   } if(key == 'r' || keyCode == CONTROL) {
     keys[9] = true;
