@@ -73,6 +73,7 @@ void setup() {
   blockBlue[7] = 0;
   blockBlue[8] = 255;
   
+  grassTop = loadImage("GrassTop.png");
   //ground.add(new Ground(0, 0, 0, 1000, 10, 1000, false, 0, 150, 0));
   rectMode(CORNERS);
   lights();
@@ -91,10 +92,10 @@ void setup() {
 void draw() {
   background(100, 200, 250);
   //lights();
-  lightFalloff(1.0, 0.0, 0.0);
-  ambientLight(120, 120, 120);
-  pointLight(200, 200, 200, 140, -160, 144);
-  pointLight(me.x, me.y, me.z, 0, 0, 0);
+  //lightFalloff(1.0, 0.0, 0.0);
+  //ambientLight(120, 120, 120);
+  //pointLight(200, 200, 200, 140, -160, 144);
+  //pointLight(me.x, me.y, me.z, 0, 0, 0);
   //noLights();
   for(int i = 0; i < ground.size(); i++) {
     if(Math.sqrt((ground.get(i).x-me.x)*(ground.get(i).x-me.x) + (ground.get(i).y-me.y)*(ground.get(i).y-me.y) + (ground.get(i).z-me.z)*(ground.get(i).z-me.z)) < 50 && !nearbyGround.contains(ground.get(i))) {nearbyGround.add(ground.get(i));}
@@ -107,6 +108,19 @@ void draw() {
   moveCam();
   me.jump = false;
   blockCoords.clear();
+  /*for(int i = 0; i < nearbyGround.size(); i++) {
+    fill(0);
+    textSize(5);
+    textAlign(CENTER);
+    pushMatrix();
+    translate(nearbyGround.get(i).x, nearbyGround.get(i).y, nearbyGround.get(i).z);
+    rotateX(PI/2);
+    translate(0, 0, 6);
+    text(nearbyGround.get(i).xc, 0, 0);
+    popMatrix();
+    textSize(15);
+    textAlign(LEFT);
+  }*/
   for(int i = 0; i < nearbyGround.size(); i++) {
     float[] tempCoords = {nearbyGround.get(i).x, nearbyGround.get(i).y, nearbyGround.get(i).z};
     blockCoords.add(tempCoords);
@@ -148,6 +162,10 @@ void draw() {
   text(camRX, 30, 90);
   text(camRY, 90, 90);
   text(sin(camRY), 150, 90);
+  text(crouchBlock[0], 30, 120);
+  text(crouchBlock[1], 90, 120);
+  text(me.x, 30, 150);
+  text(me.z, 90, 150);
   hotbar();
   pushMatrix();
   //rotateY(-camRX);
@@ -179,6 +197,10 @@ void draw() {
   if(!mousePressed) {
     placeCooldownStart = 0;
   }
+  pushMatrix();
+  translate(50, -50, 50);
+  texturedBox(10, grassTop);
+  popMatrix();
 }
 
 public void playerHand() {
