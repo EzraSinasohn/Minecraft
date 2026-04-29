@@ -1,5 +1,5 @@
 public boolean snapMouse = true, canPlace = false;
-public float logMouseX, logMouseY, hlX, hlY, hlZ, plX, plY, plZ;
+public float logMouseX, logMouseY, hlX, hlY, hlZ, plX, plY, plZ, elX, elY, elZ;
 public float punchTimer = 0;
 public int indexOfBlock = 0, placeCooldownStart = 0;
 public float[] placeBlock;
@@ -7,6 +7,8 @@ public ArrayList <float[]> highlightedBlocks = new ArrayList<float[]>();
 public ArrayList <float[]> placerBlocks = new ArrayList<float[]>();
 public ArrayList <float[]> placerCandidates = new ArrayList<float[]>();
 public ArrayList <Ground> highlightCandidates = new ArrayList<Ground>();
+public ArrayList <Entity> entityCandidates = new ArrayList<Entity>();
+public ArrayList <float[]> highlightedEntities = new ArrayList<float[]>();
 public void mouseMoved() {
   if(mouseY > height/2 && camRY < 1.5) {
     logMouseY = mouseY;
@@ -193,6 +195,64 @@ public void findLookAt() {
   findPlacerCandidates();
   highlightCandidates.clear();     
   highlightedBlocks.clear();
+}
+
+public void findEntityPunch() {
+  for(int i = 0; i < 50; i++) {
+    fill(5*i, 0, 0);
+    noStroke();
+    pushMatrix();
+    translate(me.x, me.y-eyeHeight, me.z);
+    rotateY(-camRX);
+    rotateZ(camRY);
+    translate(i, 0, 0);
+    //box(0.5);
+    elX = modelX(0, 0, 0);
+    elY = modelY(0, 0, 0);
+    elZ = modelZ(0, 0, 0);
+    popMatrix();
+    float[] entityHighlighted = {elX, elY, elZ};
+    pushMatrix();
+    translate(elX, elY, elZ);
+    //box(1);
+    popMatrix();
+    highlightedEntities.add(entityHighlighted);
+  }
+  for(int i = 0; i < entities.size(); i++) {
+    entities.get(i).highlighted = false;
+  }
+  for(int i = 0; i < entities.size(); i++) {
+    float[] highlightCheck = {entities.get(i).x, entities.get(i).y, entities.get(i).z};
+    for(int n = 0; n < highlightedEntities.size(); n++) {
+      if(Math.abs(highlightCheck[0]-highlightedEntities.get(n)[0]) <= 5 && Math.abs(highlightCheck[1]-highlightedEntities.get(n)[1]) <= 5 && Math.abs(highlightCheck[2]-highlightedEntities.get(n)[2]) <= 5) {
+        entityCandidates.add(entities.get(i));
+      }
+    }
+  }
+  for(int n = 0; n < entityCandidates.size(); n++) {
+    for(int i = 0; i < entityCandidates.size()-1; i++) {
+      if(Math.sqrt((entityCandidates.get(i).x-me.x)*(entityCandidates.get(i).x-me.x)+(entityCandidates.get(i).y-me.y)*(entityCandidates.get(i).y-me.y)+(entityCandidates.get(i).z-me.z)*(entityCandidates.get(i).z-me.z)) > Math.sqrt((entityCandidates.get(i+1).x-me.x)*(entityCandidates.get(i+1).x-me.x)+(entityCandidates.get(i+1).y-me.y)*(entityCandidates.get(i+1).y-me.y)+(entityCandidates.get(i+1).z-me.z)*(entityCandidates.get(i+1).z-me.z))) {
+        Entity temp = entityCandidates.get(i);
+        entityCandidates.set(i, entityCandidates.get(i+1));
+        entityCandidates.set(i+1, temp);
+      }
+    }
+  }
+  float hdX = 5, hdY = 5, hdZ = 5;
+  for(int i = 0; i < entityCandidates.size(); i++) {
+    if(Math.sqrt((entityCandidates.get(i).x-me.x)*(entityCandidates.get(i).x-me.x) + (entityCandidates.get(i).y-me.y)*(entityCandidates.get(i).y-me.y) + (entityCandidates.get(i).z-me.z)*(entityCandidates.get(i).z-me.z)) < Math.sqrt((hdX-me.x)*(hdX-me.x) + (hdY-me.y)*(hdY-me.y) + (hdZ-me.z)*(hdZ-me.z))) {
+      hdX = entityCandidates.get(i).x;
+      hdY = entityCandidates.get(i).y;
+      hdZ = entityCandidates.get(i).z;
+    }
+  }
+  if(entityCandidates.size() > 0) {
+    entityCandidates.get(0).highlighted = true;
+    //highlightCandidates.clear();
+    //placerCandidates.clear();
+  }
+  entityCandidates.clear();     
+  highlightedEntities.clear();
 }
 
 /*public void moveCam() {
