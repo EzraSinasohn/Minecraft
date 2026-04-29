@@ -1,7 +1,7 @@
 class Ground {
   public int xc, yc, zc;
   public float x, y, z, l, w, h, r, g, b;
-  public boolean stair, highlighted, nearby, placer;
+  public boolean stair, highlighted, nearby, placer, textured;
   public PImage texture;
   public Ground(float xPos, float yPos, float zPos, float myLength, float myHeight, float myWidth, boolean s, float red, float green, float blue) {
     x = xPos*10;
@@ -17,6 +17,7 @@ class Ground {
     xc = (int) (x/10);
     yc = (int) (-y/10);
     zc = (int) (z/10);
+    textured = false;
   }
   
   public Ground(float xPos, float yPos, float zPos, float myLength, float myHeight, float myWidth, boolean s, PImage img) {
@@ -31,21 +32,36 @@ class Ground {
     xc = (int) (x/10);
     yc = (int) (-y/10);
     zc = (int) (z/10);
+    textured = true;
   }
   
   public void show() {
-    noStroke();
-    if(Math.sqrt((me.x-x)*(me.x-x) + (me.z-z)*(me.z-z)) < 300 /*&& screenY(x, y, z) <= height+300*/) {
-      fill(r, g, b);
-      //if(nearby) {fill(0, 255, 255);}
-      if(highlighted) {
-        stroke(1);
-        //fill(0, 0, 255);
+    if(textured) {
+      if(Math.sqrt((me.x-x)*(me.x-x) + (me.z-z)*(me.z-z)) < 300) {
+        pushMatrix();
+        translate(x, y, z);
+        texturedBox(10, texture);
+        if(highlighted) {
+          stroke(1);
+          fill(0, 0);
+          box(l, w, h);
+        }
+        popMatrix();
       }
-      pushMatrix();
-      translate(x, y, z);
-      box(l, h, w);
-      popMatrix();
+    } else {
+      noStroke();
+      if(Math.sqrt((me.x-x)*(me.x-x) + (me.z-z)*(me.z-z)) < 300 /*&& screenY(x, y, z) <= height+300*/) {
+        fill(r, g, b);
+        //if(nearby) {fill(0, 255, 255);}
+        if(highlighted) {
+          stroke(1);
+          //fill(0, 0, 255);
+        }
+        pushMatrix();
+        translate(x, y, z);
+        box(l, h, w);
+        popMatrix();
+      }
     }
   }
   
