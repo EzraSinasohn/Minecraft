@@ -198,7 +198,11 @@ class Player {
 
 
 public void keyPressed() {
-  if(key == 'm') {
+  if(key == 'g') {
+    entities.add(new Entity((float) (me.x+(Math.random()*100-50)), -25, (float) (me.z+(Math.random()*100-50)), 8, 20, 8));
+  } if(key == 'x') {
+    entities.clear();
+  } if(key == 'm') {
     snapMouse = !snapMouse;
   } if(keyCode == SHIFT) {
     keys[10] = true;
