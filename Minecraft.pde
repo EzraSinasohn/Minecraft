@@ -11,36 +11,49 @@ int hotbarSlot;
 int[] blockRed = new int[9];
 int[] blockGreen = new int[9];
 int[] blockBlue = new int[9];
+PImage[] blockTexture = new PImage[9];
 boolean punching = false;
 Player me = new Player(0, -25, 0, 6, 20, 6);
 void setup() {
+  for(int i = 0; i < 3; i++) {
+    entities.add(new Entity(0, -25, 0, 8, 20, 8));
+  }
   fullScreen(P3D);
   //size(1000, 800, P3D);
+  grassTop = loadImage("GrassTop.png");
+  dirt = loadImage("Dirt.png");
+  bricks = loadImage("Bricks.png");
+  block_of_diamond = loadImage("BlockOfDiamond.png");
+  stone = loadImage("Stone.png");
+  obsidian = loadImage("Obsidian.png");
+  glass = loadImage("Glass.png");
+  oak_planks = loadImage("OakPlanks.png");
+  white_wool = loadImage("WhiteWool.png");
   //ground.add(new Ground(0, -75, 0, 25, 25, 25, false));
-  ground.add(new Ground(0, 1, 0, 10, 10, 10, false, 100, 100, 100));
-  ground.add(new Ground(0, 1, -1, 10, 10, 10, false, 100, 100, 100));
-  ground.add(new Ground(0, 1, 1, 10, 10, 10, false, 100, 100, 100));
-  ground.add(new Ground(-1, 1, 0, 10, 10, 10, false, 100, 100, 100));
-  ground.add(new Ground(-1, 1, 1, 10, 10, 10, false, 100, 100, 100));
-  ground.add(new Ground(-1, 1, -1, 10, 10, 10, false, 100, 100, 100));
-  ground.add(new Ground(1, 1, 0, 10, 10, 10, false, 100, 100, 100));
-  ground.add(new Ground(1, 1, -1, 10, 10, 10, false, 100, 100, 100));
-  ground.add(new Ground(1, 1, 1, 10, 10, 10, false, 100, 100, 100));
-  ground.add(new Ground(4, 1, 0, 10, 10, 10, false, 255, 0, 0));
+  ground.add(new Ground(0, 1, 0, 10, 10, 10, false, stone));
+  ground.add(new Ground(0, 1, -1, 10, 10, 10, false, stone));
+  ground.add(new Ground(0, 1, 1, 10, 10, 10, false, stone));
+  ground.add(new Ground(-1, 1, 0, 10, 10, 10, false, stone));
+  ground.add(new Ground(-1, 1, 1, 10, 10, 10, false, stone));
+  ground.add(new Ground(-1, 1, -1, 10, 10, 10, false, stone));
+  ground.add(new Ground(1, 1, 0, 10, 10, 10, false, stone));
+  ground.add(new Ground(1, 1, -1, 10, 10, 10, false, stone));
+  ground.add(new Ground(1, 1, 1, 10, 10, 10, false, stone));
+  ground.add(new Ground(4, 1, 0, 10, 10, 10, false, bricks));
   for(int i = -50; i < 50; i++) {
     for(int n = -50; n < 50; n++) {
-      ground.add(new Ground(i, 0, n, 10, 10, 10, false, 0, 150, 0));
+      ground.add(new Ground(i, 0, n, 10, 10, 10, false, grassTop));
     }
   }
   for(int i = -5; i < 5; i++) {
-    ground.add(new Ground(i, 1, 5, 10, 10, 10, false, 0, 150, 150));
-    ground.add(new Ground(i, 2, 5, 10, 10, 10, false, 0, 150, 150));
-    ground.add(new Ground(i, 3, 5, 10, 10, 10, false, 0, 150, 150));
+    ground.add(new Ground(i, 1, 5, 10, 10, 10, false, block_of_diamond));
+    ground.add(new Ground(i, 2, 5, 10, 10, 10, false, block_of_diamond));
+    ground.add(new Ground(i, 3, 5, 10, 10, 10, false, block_of_diamond));
   }
   for(int i = -5; i < 5; i++) {
-    ground.add(new Ground(i, 1, 6, 10, 10, 10, false, 0, 150, 150));
-    ground.add(new Ground(i, 2, 6, 10, 10, 10, false, 0, 150, 150));
-    ground.add(new Ground(i, 3, 6, 10, 10, 10, false, 0, 150, 150));
+    ground.add(new Ground(i, 1, 6, 10, 10, 10, false, block_of_diamond));
+    ground.add(new Ground(i, 2, 6, 10, 10, 10, false, block_of_diamond));
+    ground.add(new Ground(i, 3, 6, 10, 10, 10, false, block_of_diamond));
   }
   
   blockRed[0] = 150;
@@ -73,7 +86,17 @@ void setup() {
   blockBlue[7] = 0;
   blockBlue[8] = 255;
   
-  grassTop = loadImage("GrassTop.png");
+  blockTexture[0] = dirt;
+  blockTexture[1] = grassTop;
+  blockTexture[2] = bricks;
+  blockTexture[3] = block_of_diamond;
+  blockTexture[4] = stone;
+  blockTexture[5] = obsidian;
+  blockTexture[6] = glass;
+  blockTexture[7] = oak_planks;
+  blockTexture[8] = white_wool;
+  
+  
   //ground.add(new Ground(0, 0, 0, 1000, 10, 1000, false, 0, 150, 0));
   rectMode(CORNERS);
   lights();
@@ -104,6 +127,13 @@ void draw() {
     if(screenZ(ground.get(i).x, ground.get(i).y, ground.get(i).z) > 0) {
       ground.get(i).show();
     }
+  }
+  for(int i = 0; i < entities.size(); i++) {
+    for(int n = 0; n < ground.size(); n++) {
+      entities.get(i).collision(ground.get(n));
+    }
+    entities.get(i).move();
+    entities.get(i).show();
   }
   moveCam();
   me.jump = false;
@@ -185,11 +215,13 @@ void draw() {
   //fill(blockRed[hotbarSlot], blockGreen[hotbarSlot], blockBlue[hotbarSlot]);
   box(200, 800, 200);
   translate(0, -400, 0);
-  fill(blockRed[hotbarSlot], blockGreen[hotbarSlot], blockBlue[hotbarSlot]);
-  box(250);
+  //fill(blockRed[hotbarSlot], blockGreen[hotbarSlot], blockBlue[hotbarSlot]);
+  //box(250);
+  texturedBox(250, blockTexture[hotbarSlot]);
   popMatrix();
   cam.endHUD();
   findLookAt();
+  findEntityPunch();
   if(canPlace && mousePressed && mouseButton == RIGHT && millis()-placeCooldownStart > 200) {
     placeCooldownStart = millis();
     use();
@@ -199,8 +231,13 @@ void draw() {
   }
   pushMatrix();
   translate(50, -50, 50);
-  texturedBox(10, grassTop);
   popMatrix();
+  for(int i = entities.size()-1; i >= 0; i--) {
+    if(entities.get(i).health <= 0) {entities.remove(i);}
+  }
+  for(int i = entities.size()-1; i >= 0; i--) {
+    if(Math.sqrt((me.x-entities.get(i).x)*(me.x-entities.get(i).x)+(me.y-entities.get(i).y)*(me.y-entities.get(i).y)+(me.z-entities.get(i).z)*(me.z-entities.get(i).z)) > 300) {entities.remove(i);}
+  }
 }
 
 public void playerHand() {
@@ -227,12 +264,18 @@ public void punch() {
   punchTimer = millis();
   punching = true;
   handAngle = -PI/8;
+  for(int i = 0; i < entities.size(); i++) {
+    if(entities.get(i).highlighted) {
+      entities.get(i).punched();
+      return;
+    }
+  }
   for(int i = 0; i < ground.size(); i++) {
     if(ground.get(i).highlighted) {
       ground.remove(i);
       break;
     }
-   }
+  }
 }
 
 public void use() {
@@ -285,7 +328,7 @@ public void use() {
     }
   }
   if(placerCandidates.size() > 0 && !occupiedBlock) {
-    ground.add(new Ground(Math.round(placerCandidates.get(0)[0]/10), Math.round(-placerCandidates.get(0)[1]/10), Math.round(placerCandidates.get(0)[2]/10), 10, 10, 10, false, red, green, blue));
+    ground.add(new Ground(Math.round(placerCandidates.get(0)[0]/10), Math.round(-placerCandidates.get(0)[1]/10), Math.round(placerCandidates.get(0)[2]/10), 10, 10, 10, false, blockTexture[hotbarSlot]));
   }
 }
 
@@ -353,6 +396,7 @@ public void makeSlot(int numSlot) {
   strokeWeight(1);
   rect(width/2-235.5+numSlot*53, height-13, width/2-191.5+numSlot*53, height-57);
   fill(blockRed[numSlot], blockGreen[numSlot], blockBlue[numSlot]);
+  if(numSlot == 6) {fill(blockRed[numSlot], blockGreen[numSlot], blockBlue[numSlot], 20);}
   rect(width/2-235.5+numSlot*53, height-13, width/2-191.5+numSlot*53, height-57);
 }
 
