@@ -1,9 +1,10 @@
-PImage grassTop;
+PImage grassTop, dirt, bricks, block_of_diamond, stone, obsidian, glass, oak_planks, white_wool;
 public void texturedBox(float size, PImage img) {
   imageMode(CENTER);
   pushMatrix();
   for(int i = 0; i < 4; i++) {
     translate(0, 0, size/2);
+    if(img == grassTop) {tint(30, 200, 50);}
     image(img, 0, 0, size, size);
     translate(0, 0, -size/2);
     rotateY(PI/2);
@@ -15,5 +16,6 @@ public void texturedBox(float size, PImage img) {
   rotateX(PI);
   translate(0, 0, size/2);
   image(img, 0, 0, size, size);
+  noTint();
   popMatrix();
 }
