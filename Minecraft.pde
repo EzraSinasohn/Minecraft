@@ -21,6 +21,8 @@ void setup() {
   fullScreen(P3D);
   //size(1000, 800, P3D);
   grassTop = loadImage("GrassTop.png");
+  grassSide = loadImage("GrassSide.png");
+  grassSideOverlay = loadImage("GrassSideOverlay.png");
   dirt = loadImage("Dirt.png");
   bricks = loadImage("Bricks.png");
   block_of_diamond = loadImage("BlockOfDiamond.png");
@@ -29,6 +31,8 @@ void setup() {
   glass = loadImage("Glass.png");
   oak_planks = loadImage("OakPlanks.png");
   white_wool = loadImage("WhiteWool.png");
+  PImage[] tempGrass = {grassTop, dirt, grassSide};
+  grass = tempGrass;
   //ground.add(new Ground(0, -75, 0, 25, 25, 25, false));
   ground.add(new Ground(0, 1, 0, 10, 10, 10, false, stone));
   ground.add(new Ground(0, 1, -1, 10, 10, 10, false, stone));
@@ -42,7 +46,7 @@ void setup() {
   ground.add(new Ground(4, 1, 0, 10, 10, 10, false, bricks));
   for(int i = -50; i < 50; i++) {
     for(int n = -50; n < 50; n++) {
-      ground.add(new Ground(i, 0, n, 10, 10, 10, false, grassTop));
+      ground.add(new Ground(i, 0, n, 10, 10, 10, false, grass));
     }
   }
   for(int i = -5; i < 5; i++) {
@@ -110,6 +114,7 @@ void setup() {
   cam = new PeasyCam(this, 100);
   cam.setActive(false);
   //cam.setWheelHandler(null);
+  for(int i = 0; i < ground.size(); i++) {ground.get(i).initialNeighbors();}
 }
 
 void draw() {
@@ -238,6 +243,12 @@ void draw() {
   for(int i = entities.size()-1; i >= 0; i--) {
     if(Math.sqrt((me.x-entities.get(i).x)*(me.x-entities.get(i).x)+(me.y-entities.get(i).y)*(me.y-entities.get(i).y)+(me.z-entities.get(i).z)*(me.z-entities.get(i).z)) > 300) {entities.remove(i);}
   }
+  for(int i = 0; i < ground.size(); i++) {
+    if(Math.sqrt((me.x-ground.get(i).x)*(me.x-ground.get(i).x)+(me.y-ground.get(i).y)*(me.y-ground.get(i).y)+(me.z-ground.get(i).z)*(me.z-ground.get(i).z)) < 60) {
+      ground.get(i).neighbors();
+    }
+    
+  }
 }
 
 public void playerHand() {
@@ -328,7 +339,11 @@ public void use() {
     }
   }
   if(placerCandidates.size() > 0 && !occupiedBlock) {
-    ground.add(new Ground(Math.round(placerCandidates.get(0)[0]/10), Math.round(-placerCandidates.get(0)[1]/10), Math.round(placerCandidates.get(0)[2]/10), 10, 10, 10, false, blockTexture[hotbarSlot]));
+    if(hotbarSlot != 1) {
+      ground.add(new Ground(Math.round(placerCandidates.get(0)[0]/10), Math.round(-placerCandidates.get(0)[1]/10), Math.round(placerCandidates.get(0)[2]/10), 10, 10, 10, false, blockTexture[hotbarSlot]));
+    } else {
+      ground.add(new Ground(Math.round(placerCandidates.get(0)[0]/10), Math.round(-placerCandidates.get(0)[1]/10), Math.round(placerCandidates.get(0)[2]/10), 10, 10, 10, false, grass));
+    }
   }
 }
 

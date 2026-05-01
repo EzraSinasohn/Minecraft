@@ -1,8 +1,9 @@
 class Ground {
   public int xc, yc, zc;
   public float x, y, z, l, w, h, r, g, b;
-  public boolean stair, highlighted, nearby, placer, textured;
+  public boolean stair, highlighted, nearby, placer, textured, commonSides, xNB, nxNB, yNB, nyNB, zNB, nzNB;
   public PImage texture;
+  public PImage[] blockMap;
   public Ground(float xPos, float yPos, float zPos, float myLength, float myHeight, float myWidth, boolean s, float red, float green, float blue) {
     x = xPos*10;
     y = -yPos*10;
@@ -33,6 +34,23 @@ class Ground {
     yc = (int) (-y/10);
     zc = (int) (z/10);
     textured = true;
+    commonSides = true;
+  }
+  
+  public Ground(float xPos, float yPos, float zPos, float myLength, float myHeight, float myWidth, boolean s, PImage[] imgs) {
+    x = xPos*10;
+    y = -yPos*10;
+    z = zPos*10;
+    l = myLength;
+    w = myWidth;
+    h = myHeight;
+    stair = s;
+    blockMap = imgs;
+    xc = (int) (x/10);
+    yc = (int) (-y/10);
+    zc = (int) (z/10);
+    textured = true;
+    commonSides = false;
   }
   
   public void show() {
@@ -40,7 +58,8 @@ class Ground {
       if(Math.sqrt((me.x-x)*(me.x-x) + (me.z-z)*(me.z-z)) < 300) {
         pushMatrix();
         translate(x, y, z);
-        texturedBox(10, texture);
+        if(commonSides) {texturedBox(10, texture);}
+        else {texturedBox(10, blockMap, !yNB, !nyNB, !xNB, !nxNB, !zNB, !nzNB);}
         if(highlighted) {
           stroke(1);
           fill(0, 0);
@@ -65,7 +84,7 @@ class Ground {
     }
   }
   
-  public boolean[] neighbors() {
+  /*public boolean[] neighbors() {
     boolean[] neighborCheck = {false, false, false, false, false, false};
     for(int i = 0; i < nearbyGround.size(); i++) {
       if(nearbyGround.get(i).xc == xc-1 && nearbyGround.get(i).yc == yc && nearbyGround.get(i).zc == zc) { //negX
@@ -80,6 +99,70 @@ class Ground {
         neighborCheck[4] = true;
       } if(nearbyGround.get(i).xc == xc && nearbyGround.get(i).yc == yc && nearbyGround.get(i).zc == zc+1) { //posZ
         neighborCheck[5] = true;
+      }
+    }
+    return neighborCheck;
+  }*/
+  
+  public boolean[] neighbors() {
+    boolean[] neighborCheck = {false, false, false, false, false, false};
+    xNB = false;
+    nxNB = false;
+    yNB = false;
+    nyNB = false;
+    zNB = false;
+    nzNB = false;
+    for(int i = 0; i < nearbyGround.size(); i++) {
+      if(nearbyGround.get(i).xc == xc-1 && nearbyGround.get(i).yc == yc && nearbyGround.get(i).zc == zc) { //negX
+        neighborCheck[0] = true;
+        nxNB = true;
+      } if(nearbyGround.get(i).xc == xc+1 && nearbyGround.get(i).yc == yc && nearbyGround.get(i).zc == zc) { //posX
+        neighborCheck[1] = true;
+        xNB = true;
+      } if(nearbyGround.get(i).xc == xc && nearbyGround.get(i).yc == yc-1 && nearbyGround.get(i).zc == zc) { //negY
+        neighborCheck[2] = true;
+        nyNB = true;
+      } if(nearbyGround.get(i).xc == xc && nearbyGround.get(i).yc == yc+1 && nearbyGround.get(i).zc == zc) { //posY
+        neighborCheck[3] = true;
+        yNB = true;
+      } if(nearbyGround.get(i).xc == xc && nearbyGround.get(i).yc == yc && nearbyGround.get(i).zc == zc-1) { //negZ
+        neighborCheck[4] = true;
+        nzNB = true;
+      } if(nearbyGround.get(i).xc == xc && nearbyGround.get(i).yc == yc && nearbyGround.get(i).zc == zc+1) { //posZ
+        neighborCheck[5] = true;
+        zNB = true;
+      }
+    }
+    return neighborCheck;
+  }
+  
+  public boolean[] initialNeighbors() {
+    boolean[] neighborCheck = {false, false, false, false, false, false};
+    xNB = false;
+    nxNB = false;
+    yNB = false;
+    nyNB = false;
+    zNB = false;
+    nzNB = false;
+    for(int i = 0; i < ground.size(); i++) {
+      if(ground.get(i).xc == xc-1 && ground.get(i).yc == yc && ground.get(i).zc == zc) { //negX
+        neighborCheck[0] = true;
+        nxNB = true;
+      } if(ground.get(i).xc == xc+1 && ground.get(i).yc == yc && ground.get(i).zc == zc) { //posX
+        neighborCheck[1] = true;
+        xNB = true;
+      } if(ground.get(i).xc == xc && ground.get(i).yc == yc-1 && ground.get(i).zc == zc) { //negY
+        neighborCheck[2] = true;
+        nyNB = true;
+      } if(ground.get(i).xc == xc && ground.get(i).yc == yc+1 && ground.get(i).zc == zc) { //posY
+        neighborCheck[3] = true;
+        yNB = true;
+      } if(ground.get(i).xc == xc && ground.get(i).yc == yc && ground.get(i).zc == zc-1) { //negZ
+        neighborCheck[4] = true;
+        nzNB = true;
+      } if(ground.get(i).xc == xc && ground.get(i).yc == yc && ground.get(i).zc == zc+1) { //posZ
+        neighborCheck[5] = true;
+        zNB = true;
       }
     }
     return neighborCheck;
