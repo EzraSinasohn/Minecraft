@@ -21,6 +21,29 @@ public void texturedBox(float size, PImage img) {
   popMatrix();
 }
 
+public void texturedBox(float size, PImage img, boolean topNB, boolean bottomNB, boolean posXNB, boolean negXNB, boolean posZNB, boolean negZNB) {
+  imageMode(CENTER);
+  pushMatrix();
+  if(img == grassTop) {tint(30, 200, 50);}
+  for(int i = 0; i < 4; i++) {
+    translate(0, 0, size/2);
+    if((i == 0 && posZNB) || (i == 1 && posXNB) || (i == 2 && negZNB) || (i == 3 && negXNB)) {
+      image(img, 0, 0, size, size);
+    }
+    translate(0, 0, -size/2);
+    rotateY(PI/2);
+  }
+  rotateX(PI/2);
+  translate(0, 0, size/2);
+  if(topNB) {image(img, 0, 0, size, size);}
+  translate(0, 0, -size/2);
+  rotateX(PI);
+  translate(0, 0, size/2);
+  if(bottomNB) {image(img, 0, 0, size, size);}
+  noTint();
+  popMatrix();
+}
+
 public void texturedBox(float size, PImage[] img) {
   imageMode(CENTER);
   pushMatrix();
