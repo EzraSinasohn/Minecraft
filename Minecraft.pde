@@ -5,6 +5,7 @@ Robot robot;
 PeasyCam cam;
 ArrayList<Ground> ground = new ArrayList<Ground>();
 ArrayList<Ground> nearbyGround = new ArrayList<Ground>();
+ArrayList<Ground> accessibleGround = new ArrayList<Ground>();
 ArrayList<float[]> blockCoords = new ArrayList<float[]>();
 float camX = 0, camY = 0, camZ = 100, camRX = 0, camRY = 0, camVY = 0, handAngle = 0;
 int hotbarSlot;
@@ -13,13 +14,14 @@ int[] blockGreen = new int[9];
 int[] blockBlue = new int[9];
 PImage[] blockTexture = new PImage[9];
 boolean punching = false;
-Player me = new Player(0, -25, 0, 6, 20, 6);
+Player me = new Player(0, -250, 0, 6, 20, 6);
 void setup() {
   for(int i = 0; i < 3; i++) {
     entities.add(new Entity(0, -25, 0, 8, 20, 8));
   }
   fullScreen(P3D);
   //size(1000, 800, P3D);
+  requestImage("GrassTop.png");
   grassTop = loadImage("GrassTop.png");
   grassSide = loadImage("GrassSide.png");
   grassSideOverlay = loadImage("GrassSideOverlay.png");
@@ -34,7 +36,7 @@ void setup() {
   PImage[] tempGrass = {grassTop, dirt, grassSide};
   grass = tempGrass;
   //ground.add(new Ground(0, -75, 0, 25, 25, 25, false));
-  ground.add(new Ground(0, 1, 0, 10, 10, 10, false, stone));
+  /*ground.add(new Ground(0, 1, 0, 10, 10, 10, false, stone));
   ground.add(new Ground(0, 1, -1, 10, 10, 10, false, stone));
   ground.add(new Ground(0, 1, 1, 10, 10, 10, false, stone));
   ground.add(new Ground(-1, 1, 0, 10, 10, 10, false, stone));
@@ -58,7 +60,9 @@ void setup() {
     ground.add(new Ground(i, 1, 6, 10, 10, 10, false, block_of_diamond));
     ground.add(new Ground(i, 2, 6, 10, 10, 10, false, block_of_diamond));
     ground.add(new Ground(i, 3, 6, 10, 10, 10, false, block_of_diamond));
-  }
+  }*/
+  
+  generateTerrain();
   
   blockRed[0] = 150;
   blockRed[1] = 0;
@@ -119,6 +123,11 @@ void setup() {
 
 void draw() {
   background(100, 200, 250);
+  for(int i = 0; i < ground.size(); i++) {
+    if(!(ground.get(i).nxNB && ground.get(i).xNB && ground.get(i).nyNB && ground.get(i).yNB && ground.get(i).nzNB && ground.get(i).zNB)) {
+      accessibleGround.add(ground.get(i));
+    }
+  }
   //lights();
   //lightFalloff(1.0, 0.0, 0.0);
   //ambientLight(120, 120, 120);
@@ -128,14 +137,14 @@ void draw() {
   for(int i = 0; i < ground.size(); i++) {
     if(Math.sqrt((ground.get(i).x-me.x)*(ground.get(i).x-me.x) + (ground.get(i).y-me.y)*(ground.get(i).y-me.y) + (ground.get(i).z-me.z)*(ground.get(i).z-me.z)) < 50 && !nearbyGround.contains(ground.get(i))) {nearbyGround.add(ground.get(i));}
   }
-  for(int i = 0; i < ground.size(); i++) {
-    if(screenZ(ground.get(i).x, ground.get(i).y, ground.get(i).z) > 0) {
-      ground.get(i).show();
+  for(int i = 0; i < accessibleGround.size(); i++) {
+    if(screenZ(accessibleGround.get(i).x, accessibleGround.get(i).y, accessibleGround.get(i).z) > 0 && (!accessibleGround.get(i).nxNB || !accessibleGround.get(i).xNB || !accessibleGround.get(i).nyNB || !accessibleGround.get(i).yNB || !accessibleGround.get(i).nzNB || !accessibleGround.get(i).zNB)) {
+      accessibleGround.get(i).show();
     }
   }
   for(int i = 0; i < entities.size(); i++) {
-    for(int n = 0; n < ground.size(); n++) {
-      entities.get(i).collision(ground.get(n));
+    for(int n = 0; n < accessibleGround.size(); n++) {
+      entities.get(i).collision(accessibleGround.get(n));
     }
     entities.get(i).move();
     entities.get(i).show();
@@ -194,6 +203,8 @@ void draw() {
   stroke(1);
   fill(0);
   text(nearbyGround.size(), 30, 60);
+  text(accessibleGround.size(), 90, 60);
+  text(ground.size(), 150, 60);
   text(camRX, 30, 90);
   text(camRY, 90, 90);
   text(sin(camRY), 150, 90);
@@ -245,10 +256,10 @@ void draw() {
   }
   for(int i = 0; i < ground.size(); i++) {
     if(Math.sqrt((me.x-ground.get(i).x)*(me.x-ground.get(i).x)+(me.y-ground.get(i).y)*(me.y-ground.get(i).y)+(me.z-ground.get(i).z)*(me.z-ground.get(i).z)) < 60) {
-      ground.get(i).neighbors();
+      ground.get(i).initialNeighbors();
     }
-    
   }
+  accessibleGround.clear();
 }
 
 public void playerHand() {
@@ -441,4 +452,40 @@ public void crosshair() {
   emissive(255);*/
   translate(0, 0, -10);
   rect(width/2, height/2, 10, 10);
+}
+
+/*public void generateTerrain() {
+  //int shouldChangeY = 0;
+  float changeY = 3;
+  for(int tX = -50; tX < 50; tX++) {
+    for(int tZ = -50; tZ < 50; tZ++) {
+      if(Math.random() < 0.1) {
+        if(Math.random() < 0.5) {changeY += 0.2;}
+        else {changeY -= 0.2;}
+        if(changeY < 1) {changeY = 1;}
+      }
+      for(int tY = 0; tY < Math.round(changeY); tY++) {
+        if(tY == Math.round(changeY)-1) {ground.add(new Ground(tX, tY, tZ, 10, 10, 10, false, grass));}
+        else {ground.add(new Ground(tX, tY, tZ, 10, 10, 10, false, dirt));}
+      }
+    }
+  }
+}*/
+
+public void generateTerrain() {
+  //int shouldChangeY = 0;
+  float changeY = 1;
+  for(int tX = -50; tX < 50; tX++) {
+    for(int tZ = -50; tZ < 50; tZ++) {
+      //if(Math.random() < 0.1) {
+        //if(Math.random() < 0.5) {changeY += 0.2;}
+        //else {changeY -= 0.2;}
+        //if(changeY < 1) {changeY = 1;}
+      //}
+      for(int tY = 0; tY < Math.round(changeY); tY++) {
+        if(tY == Math.round(changeY)-1) {ground.add(new Ground(tX, tY, tZ, 10, 10, 10, false, grass));}
+        else {ground.add(new Ground(tX, tY, tZ, 10, 10, 10, false, dirt));}
+      }
+    }
+  }
 }
